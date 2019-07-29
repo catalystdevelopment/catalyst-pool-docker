@@ -19,7 +19,12 @@ If you have the blockchain already downloaded, just put its contents inside `blo
 Now, let's set-up a wallet. Run this command:
 - `docker-compose run --rm catalyst_wallet`
 
-If the wallet doesn't exist it will help you to create one. Just press `2` inside the menu. name your wallet `wallet` without any extension, and assign a password. By default, the password should be `12345678` if you chose another one, don't forget to change it in `.env` config file at `src` root folder.
+If the wallet doesn't exist it will help you to create one. Just press `2` inside the menu. Name your wallet `wallet` without any extension, and assign a password. By default, the password should be `12345678` if you chose another one, don't forget to change it in `.env` config file at `src` root folder.
 
 Next time you run this command it will log in inside the wallet. so you will be able to see the balance.
 Also after you created the wallet copy its address and seed data. You will need it later, and if something goes wrong you'll be able to restore it.
+
+> Specify your wallet address in `/config/config.json` - so the pool will know where to send the coins:)
+
+> change the website URL in `/config/site-config.js` 
+Replace the `var api = "http://fs.local:8407"` with your docker host domain or IP, in most cases, it should be `127.0.0.1` or 'localhost' or your local `IP` 
