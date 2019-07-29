@@ -1,0 +1,112 @@
+version: '3'
+services:
+  redis:
+    container_name: redis
+    hostname: redis
+    image: redis
+    restart: always
+
+  catalyst_deamon:
+    container_name: catalyst_deamon
+    hostname: catalyst.deamon
+    image: catalyst_deamon:latest
+    build:
+      context: .
+      dockerfile: ./images/deamon.Dockerfile
+    restart: always
+    command: ./daemon --data-dir blockchain --rpc-bind-ip 0.0.0.0
+    volumes:
+      - catalyst-blockchain:/daemon/blockchain
+    ports:
+      - 17290:17290
+      - 17291:17291
+
+  catalyst_rpc_service: &myservice
+    container_name: catalyst_rpc_service
+    hostname: catalyst.rpc
+    image: catalyst_rpc_service:latest
+    build:
+      context: .
+      dockerfile: ./images/rpc-service.Dockerfile
+    restart: always
+    command: ./rpc-service -w /wallet/${WALLET_FILE} -p ${WALLET_PASSWORD} --daemon-address ${DAEMON_ADDRESS} --daemon-port ${DAEMON_PORT} --rpc-legacy-security --bind-address 0.0.0.0 --bind-port 17280
+    volumes:
+      - catalyst-wallet:/wallet
+    ports:
+      - 17280:17280
+    depends_on:
+      - catalyst_deamon
+
+  catalyst_pool:
+    container_name: catalyst_pool
+    hostname: catalyst.pool
+    image: catalyst_pool:latest
+    build:
+      context: .
+      dockerfile: ./images/pool.Dockerfile
+      args:
+        TIME_ZONE: Asia/Yekaterinburg
+    environment:
+      - MODULE=ALL
+    ports:
+      - 4442:4442
+      - 4443:4443
+      - 4444:4444
+      - 8407:8407
+    expose:
+      - 4442
+      - 4443
+      - 4444
+      - 8407
+    depends_on:
+      - redis
+      - catalyst_deamon
+      - catalyst_rpc_service
+
+  catalyst_pool_site:
+    container_name: catalyst_pool_site
+    hostname: catalyst.web
+    image: catalyst_www:latest
+    build:
+      context: .
+      dockerfile: ./images/website.Dockerfile
+    ports:
+      - 80:80
+    expose:
+      - 80
+    depends_on:
+      - catalyst_pool
+
+  catalyst_wallet:
+    <<: *myservice
+    container_name: catalyst_wallet
+    working_dir: /wallet
+    command: sh -c '[ -e ${WALLET_FILE} ] && /rpc-service/wallet --remote-daemon ${DAEMON_ADDRESS}:${DAEMON_PORT} --wallet-file ${WALLET_FILE} --password ${WALLET_PASSWORD} || /rpc-service/wallet --remote-daemon ${DAEMON_ADDRESS}:${DAEMON_PORT}'
+    volumes:
+      - catalyst-wallet:/wallet
+    depends_on:
+      - catalyst_deamon
+
+  test:
+    container_name: test
+    hostname: test
+    image: node:8
+    working_dir: /catalyst
+    command: bash
+    volumes:
+      - catalyst-blockchain:/catalyst/blockchain
+      - catalyst-wallet:/catalyst/wallet
+    depends_on:
+      - catalyst_pool
+
+  build:
+    build:
+      context: .
+      dockerfile: Dockerfile.Build
+
+volumes:
+  catalyst-blockchain:
+    external: true
+  catalyst-wallet:
+    external: true
+
