@@ -2,13 +2,11 @@ version: '3'
 services:
   redis:
     container_name: redis
-    hostname: redis
     image: redis
     restart: always
 
   catalyst_deamon:
     container_name: catalyst_deamon
-    hostname: catalyst.deamon
     image: catalyst_deamon:latest
     build:
       context: .
@@ -21,9 +19,8 @@ services:
       - 17290:17290
       - 17291:17291
 
-  catalyst_rpc_service: &myservice
+  catalyst_rpc_service: &rpc_service
     container_name: catalyst_rpc_service
-    hostname: catalyst.rpc
     image: catalyst_rpc_service:latest
     build:
       context: .
@@ -39,7 +36,6 @@ services:
 
   catalyst_pool:
     container_name: catalyst_pool
-    hostname: catalyst.pool
     image: catalyst_pool:latest
     build:
       context: .
@@ -60,12 +56,10 @@ services:
       - 8407
     depends_on:
       - redis
-      - catalyst_deamon
       - catalyst_rpc_service
 
   catalyst_pool_site:
     container_name: catalyst_pool_site
-    hostname: catalyst.web
     image: catalyst_www:latest
     build:
       context: .
@@ -78,7 +72,7 @@ services:
       - catalyst_pool
 
   catalyst_wallet:
-    <<: *myservice
+    <<: *rpc_service
     container_name: catalyst_wallet
     working_dir: /wallet
     command: sh -c '[ -e ${WALLET_FILE} ] && /rpc-service/wallet --remote-daemon ${DAEMON_ADDRESS}:${DAEMON_PORT} --wallet-file ${WALLET_FILE} --password ${WALLET_PASSWORD} || /rpc-service/wallet --remote-daemon ${DAEMON_ADDRESS}:${DAEMON_PORT}'
@@ -89,7 +83,6 @@ services:
 
   test:
     container_name: test
-    hostname: test
     image: node:8
     working_dir: /catalyst
     command: bash

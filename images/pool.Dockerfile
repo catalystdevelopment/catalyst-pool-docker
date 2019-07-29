@@ -39,8 +39,3 @@ RUN git clone https://github.com/dvandal/cryptonote-nodejs-pool.git --depth 1 . 
 COPY config/config.json .
 
 CMD if [ "$MODULE" = "ALL" ] ; then node init.js; else node init.js -module=$MODULE; fi
-
-
-
-
-

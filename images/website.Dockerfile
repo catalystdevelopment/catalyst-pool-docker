@@ -14,5 +14,3 @@ RUN curl -L https://github.com/dvandal/cryptonote-nodejs-pool/tarball/master \
 WORKDIR /usr/share/nginx/html
 
 COPY config/site-config.js ./config.js
-
-
