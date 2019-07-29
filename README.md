@@ -26,5 +26,39 @@ Also after you created the wallet copy its address and seed data. You will need 
 
 **Specify your wallet address in `/config/config.json`** - so the pool will know where to send the coins:)
 
-**change the website URL in `/config/site-config.js`**
-Replace the `var api = "http://fs.local:8407"` with your docker host domain or IP, in most cases, it should be `127.0.0.1` or 'localhost' or your local `IP` 
+**change the website URL in `/config/site-config.js`** - replace the `var api = "http://fs.local:8407"` with your docker host domain or IP, in most cases, it should be `127.0.0.1` or 'localhost' or your local `IP` 
+
+**That's it now you can start the pool:**
+
+- `docker-compose up -d catalyst_pool_site` - you can access the pool at `http://docker_host_ip/admin.html` the default password is `12345678`.
+
+To stop all the services, use: `docker-compose down -v`
+To follow the logs, use: `docker-compose logs -f --tail 30`
+
+**If something went wrong, just try to lunch services one by one in console mode!**
+
+> Don't forget to recompile the `catalyst_pool` and `catalyst_pool_site` services, every time you change the config files.
+- `docker-compose build --force-rm --parallel catalyst_pool`
+- `docker-compose build --force-rm --parallel catalyst_pool_site`
+
+**You can troubleshoot each service, by starting them one by one.**
+
+**available servises:**
+- redis
+- catalyst_deamon
+- catalyst_rpc_service
+- catalyst_pool
+- catalyst_pool_site
+- catalyst_wallet
+
+- `docker-compose up -d [service_name]` - start specified service as a daemon, in the background.Start specified service as a daemon, in the background.
+- `docker-compose run --rm --service-ports [service_name]` - starts service in real-time with output to console **[CONSOLE MOD]**. 
+- `docker-compose run --rm --service-ports [service_name] bash` - log in into service container.
+- `docker-compose logs [service_name]` - watch service logs.
+- `docker-compose build --force-rm --parallel [service_name]` - **[rebuild service]**. 
+
+
+
+
+
+
