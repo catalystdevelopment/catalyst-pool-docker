@@ -30,6 +30,8 @@ Also after you created the wallet copy its address and seed data. You will need 
 
 **That's it now you can start the pool:**
 
+> Note, when you start the pool for the fires time, it can take a while to bootstrap the services. The good thing though, next time it will be blazing fast!
+
 - `docker-compose up -d catalyst_pool_site` - you can access the pool at `http://docker_host_ip/admin.html` the default password is `12345678`.
 
 To stop all the services, use: `docker-compose down -v`
@@ -55,10 +57,4 @@ To follow the logs, use: `docker-compose logs -f --tail 30`
 - `docker-compose run --rm --service-ports [service_name]` - starts service in real-time with output to console **[CONSOLE MOD]**. 
 - `docker-compose run --rm --service-ports [service_name] bash` - log in into service container.
 - `docker-compose logs [service_name]` - watch service logs.
-- `docker-compose build --force-rm --parallel [service_name]` - **[rebuild service]**. 
-
-
-
-
-
-
+- `docker-compose build --force-rm --parallel [service_name]` - **[REBUILD SERVICE]**. 
