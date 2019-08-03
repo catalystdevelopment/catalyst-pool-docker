@@ -4,6 +4,8 @@ services:
     container_name: redis
     image: redis
     restart: always
+    volumes:
+      - catalyst-db:/data
 
   catalyst_deamon:
     container_name: catalyst_deamon
@@ -96,6 +98,7 @@ services:
     volumes:
       - catalyst-blockchain:/catalyst/blockchain
       - catalyst-wallet:/catalyst/wallet
+      - catalyst-db:/catalyst/db
 
   build:
     build:
@@ -106,4 +109,6 @@ volumes:
   catalyst-blockchain:
     external: true
   catalyst-wallet:
+    external: true
+  catalyst-db:
     external: true
