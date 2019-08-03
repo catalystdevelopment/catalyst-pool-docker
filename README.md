@@ -15,7 +15,7 @@ cd catalyst-pool-docker
 chmod -R 775 ./bin
 ```
 
-> If you are going to use `AWS Free Tier` `t2.micro`, select `Ubuntu 18.04` instance, and the setup the [swap file](https://aws.amazon.com/premiumsupport/knowledge-center/ec2-memory-swap-file/) in order to compile the pool! `sudo dd if=/dev/zero of=/swapfile bs=512M count=4` etc. 
+> If you are going to use `AWS Free Tier` `t2.micro`, select `Ubuntu 18.04` instance, and then set-up the [swap file](https://aws.amazon.com/premiumsupport/knowledge-center/ec2-memory-swap-file/) in order to compile the pool! `sudo dd if=/dev/zero of=/swapfile bs=512M count=4` etc. 
 
 **Create persistent volumes**
 > We need this to store blockchain and wallet data..
