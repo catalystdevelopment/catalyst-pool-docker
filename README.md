@@ -7,6 +7,16 @@ This config is quite universal, with a little adjustment, you can use it to run 
 
 ![example 01](/docs/screenshot01.png)
 
+**Install**
+
+```
+git clone https://github.com/n8tb1t-crypto/catalyst-pool-docker.git
+cd catalyst-pool-docker
+chmod -R 775 ./bin
+```
+
+> If you are going to use `AWS Free Tier` `t2.micro`, select `Ubuntu 18.04` instance, and the setup the [swap file](https://aws.amazon.com/premiumsupport/knowledge-center/ec2-memory-swap-file/) in order to compile the pool! `sudo dd if=/dev/zero of=/swapfile bs=512M count=4` etc. 
+
 **Create persistent volumes**
 > We need this to store blockchain and wallet data..
 
