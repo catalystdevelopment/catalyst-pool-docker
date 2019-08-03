@@ -12,12 +12,15 @@ services:
       context: .
       dockerfile: ./images/deamon.Dockerfile
     restart: always
-    command: ./daemon --data-dir blockchain --rpc-bind-ip 0.0.0.0
+    command: ./daemon --data-dir blockchain --rpc-bind-ip 0.0.0.0 --enable-blockexplorer
     volumes:
       - catalyst-blockchain:/daemon/blockchain
     ports:
       - 17290:17290
       - 17291:17291
+    expose:
+      - 17290
+      - 17291
 
   catalyst_rpc_service: &rpc_service
     container_name: catalyst_rpc_service
@@ -81,16 +84,18 @@ services:
     depends_on:
       - catalyst_deamon
 
-  test:
-    container_name: test
-    image: node:8
+  backup:
+    ports:
+      - "666:22"
+    container_name: catalyst_backup
+    image: catalyst_backup:latest
+    build:
+      context: .
+      dockerfile: ./images/backup.Dockerfile
     working_dir: /catalyst
-    command: bash
     volumes:
       - catalyst-blockchain:/catalyst/blockchain
       - catalyst-wallet:/catalyst/wallet
-    depends_on:
-      - catalyst_pool
 
   build:
     build:
@@ -102,4 +107,3 @@ volumes:
     external: true
   catalyst-wallet:
     external: true
-

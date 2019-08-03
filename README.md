@@ -1,5 +1,11 @@
-# catalyst-pool-docker
+# <img src=/docs/icon.png alt="Logo" width="48" align="left" />catalyst-pool-docker
 Docker configuration to setup `Catalyst` coin pool.
+
+The `cryptonote-nodejs-pool` dockerized!
+
+This config is quite universal, with a little adjustment, you can use it to run any `cryptonote` coin pool in docker environment!
+
+![example 01](/docs/screenshot01.png)
 
 **Create persistent volumes**
 > We need this to store blockchain and wallet data..
@@ -9,7 +15,7 @@ docker volume create catalyst-blockchain
 docker volume create catalyst-wallet
 ```
 
-If you have the blockchain already downloaded, just put its contents inside `blockchain` folder in the `src` and run these commands: 
+If you have the blockchain already downloaded, just put its contents inside `blockchain` folder in the `src` and run these commands:
 
 ```bash
 docker run -d --rm --name dummy -v catalyst-blockchain:/root alpine tail -f /dev/null
@@ -29,16 +35,18 @@ Also after you created the wallet copy its address and seed data. You will need 
 
 **Specify your wallet address in `/config/config.json`** - so the pool will know where to send the coins:)
 
-**change the website URL in `/config/site-config.js`** - replace the `var api = "http://fs.local:8407"` with your docker host domain or IP, in most cases, it should be `127.0.0.1` or 'localhost' or your local `IP` 
+**change the website URL in `/config/site-config.js`** - replace the `var api = "http://fs.local:8407"` with your docker host domain or IP, in most cases, it should be `127.0.0.1` or 'localhost' or your local `IP` - the port should stay the same. Do not change it!
 
 **That's it now you can start the pool:**
 
-> Note, when you start the pool for the fires time, it can take a while to bootstrap the services. The good thing though, next time it will be blazing fast!
+> Note, when you start the pool for the first time, it can take a while to bootstrap the services. The good thing though, next time it will be blazing fast!
 
 - `docker-compose up -d catalyst_pool_site` - you can access the pool at `http://docker_host_ip/admin.html` the default password is `12345678`.
 
-To stop all the services, use: `docker-compose down -v`
-To follow the logs, use: `docker-compose logs -f --tail 30`
+![example 02](/docs/screenshot02.png)
+
+- To stop all the services, use: `docker-compose down -v`
+- To follow the logs, use: `docker-compose logs -f --tail 30`
 
 **If something went wrong, just try to lunch services one by one in console mode!**
 
@@ -56,8 +64,8 @@ To follow the logs, use: `docker-compose logs -f --tail 30`
 - catalyst_pool_site
 - catalyst_wallet
 
-- `docker-compose up -d [service_name]` - start specified service as a daemon, in the background.Start specified service as a daemon, in the background.
-- `docker-compose run --rm --service-ports [service_name]` - starts service in real-time with output to console **[CONSOLE MOD]**. 
+- `docker-compose up -d [service_name]` - starts specified service as a daemon, in the background.
+- `docker-compose run --rm --service-ports [service_name]` - starts service in real-time with output to console **[CONSOLE MOD]**.
 - `docker-compose run --rm --service-ports [service_name] bash` - log in into service container.
 - `docker-compose logs [service_name]` - watch service logs.
-- `docker-compose build --force-rm --parallel [service_name]` - **[REBUILD SERVICE]**. 
+- `docker-compose build --force-rm --parallel [service_name]` - **[REBUILD SERVICE]**.
