@@ -13,9 +13,18 @@ This config is quite universal, with a little adjustment, you can use it to run 
 ```bash
 docker volume create catalyst-blockchain
 docker volume create catalyst-wallet
+docker volume create catalyst-db
 ```
 
 If you have the blockchain already downloaded, just put its contents inside `blockchain` folder in the `src` and run these commands:
+
+> Or you can download the latest blockchain snapshot:
+> - `apt-get install megatools unrar`
+> - `megadl 'https://mega.nz/#F!fv5QhQjK!BsEqgs7SQoBCqzzfcXVXPw'`
+> - `unrar x blockchain.part1.rar`
+>
+> On Amazon EC2 instance it will take you around 3-5 minutes to download the whole blockchain snapshot!
+
 
 ```bash
 docker run -d --rm --name dummy -v catalyst-blockchain:/root alpine tail -f /dev/null
@@ -24,6 +33,8 @@ docker stop dummy
 ```
 
 > This will copy the blockchain inside the persistent docker container, and you won't need to wait until it synchronizes from scratch! Note, though, if your docker host is remote, it can take significant time, depending on your ISP connection speed. The current `Catalyst` blockchain size is around 5GB
+
+You can also copy the blockchain directly into `/var/lib/docker/volumes/catalyst-blockchain/_data`
 
 Now, let's set-up a wallet. Run this command:
 - `docker-compose run --rm catalyst_wallet`
@@ -69,3 +80,33 @@ Also after you created the wallet copy its address and seed data. You will need 
 - `docker-compose run --rm --service-ports [service_name] bash` - log in into service container.
 - `docker-compose logs [service_name]` - watch service logs.
 - `docker-compose build --force-rm --parallel [service_name]` - **[REBUILD SERVICE]**.
+
+## BACKUP
+
+**Wallet backup**
+```
+docker-compose run --rm -d --name backup backup
+docker exec backup tar -czvf wallet.tar.gz ./wallet/
+docker cp backup:/catalyst/wallet.tar.gz wallet.tar.gz
+docker rm -v -f backup
+```
+
+**Blockchain backup**
+```
+docker-compose run --rm -d --name backup backup
+docker exec backup tar -czvf blockchain.tar.gz ./blockchain/
+docker cp backup:/catalyst/blockchain.tar.gz blockchain.tar.gz
+docker rm -vf backup
+```
+
+**Pool DB backup**
+```
+docker-compose run --rm -d --name backup backup
+docker exec backup tar -czvf db.tar.gz ./db/
+docker cp backup:/catalyst/db.tar.gz db.tar.gz
+docker rm -vf backup
+```
+
+**Logs**
+- Clear pool logs `docker exec catalyst_pool sh -c "rm ./logs/*.log"`
+
