@@ -119,4 +119,5 @@ docker rm -vf backup
 
 **Logs**
 - Clear pool logs `docker exec catalyst_pool sh -c "rm ./logs/*.log"`
+- Clear docker logs `truncate -s 0 /var/lib/docker/containers/*/*-json.log`
 
